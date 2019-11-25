@@ -42,4 +42,12 @@ public class Config {
     public boolean isLoggingEnabled() {
         return Boolean.valueOf(this.callbacks.loadExtensionSetting("AutoDropRequestLogging"));
     }
+
+    public void enableSendToProxyHistory(boolean enable) {
+        this.callbacks.saveExtensionSetting("AutoDropRequestProxyHistory", Boolean.toString(enable));
+    }
+
+    public boolean isSendToProxyHistoryEnabled() {
+        return Boolean.valueOf(this.callbacks.loadExtensionSetting("AutoDropRequestProxyHistory"));
+    }
 }

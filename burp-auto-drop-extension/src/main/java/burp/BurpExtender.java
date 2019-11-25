@@ -60,7 +60,7 @@ public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
 
     @Override
     public String getTabCaption() {
-        return "Auto Drop";
+        return "Auto-Drop";
     }
 
     @Override
