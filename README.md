@@ -1,42 +1,42 @@
-# Burp-Send-To-Extension
+# Burp-Auto-Drop-Extension
 
-Adds a customizable "Send to..."-context-menu to your BurpSuite.
+This extension allows you to automatically drop requests that match certain conditions. 
+This might be helpful in case the target has logging or tracking services enabled.
 
 ## Configuration
 
-After loading the extension the "Send to"-Tab contains all necessary options to configure the "Send to"-context-menu. 
+After loading the extension the "Auto-Drop"-tab contains all necessary options to manage the rules specifying which requests are going to be dropped. 
 
-New context-menu-entries can be added using the "Add"-button. Each entry consists of following fields:
-* **Name:** the name of the context-menu-entry
-* **Command:** the command to be executed. You can use following placeholders:
-	* **%S:** will be replaced with the selected text
-	* **%F:** will be replaced with the path to a temporary file which contains the selected text
-* **Run in terminal:** defines whether a terminal-window should appear in which the configured command is executed. By default "xterm" is used as terminal-emulator. You can change the terminal-emulator in the "Miscellaneous Options" to your liking.
-* **Show preview:** gives you the chance to preview and change the command before executing it
+![Auto-Drop-Requests Tab](images/auto-drop-requests-tab.png)
 
-After creating new context-menu-entries using the "Add"-button they can be edited or deleted again using the "Edit"- and "Remove"-button. In addition the order in which they appear in the context-menu can be altered using the "Up"- and "Down"-button.
+Individual rules can be activated or deactivated with the checkbox on the left of each rule. Rules can be added, edited, removed, or reordered using the buttons. 
 
-![Burp-Send-To-Extension Tab](images/burp-send-to-extension-tab.png)
+Rules can be configured on practically any attribute of the message, including domain name, IP address, protocol, HTTP method, URL, file extension, parameters, cookies, header/body content, status code, MIME type, HTML page title, and Proxy listener port. Regular expressions can be used to define complex matching conditions for each attribute.
+
+![Auto-Drop-Requests Dialog](images/auto-drop-requests-dialog.png)
+
+Rules are processed in order, and are combined using the Boolean operators AND and OR.
+These are processed with a simple "left to right" logic in which the scope of each operator is as follows:
+
+(cumulative result of all prior rules) AND/OR (result of current rule)
+
+All active rules are processed on every message, and the result  determines whether the message is dropped.
 
 ## Context-Menu
 
-The "Send to..." context-menu contains all entries which were added in the "Send to"-Tab.
-In addition you can add new entries via the "Custom command..."-context-menu-entry.
+New rules can also be added by using the context menu in the Proxy history. 
 
-![Burp-Send-To-Extension Context-Menu](images/burp-send-to-extension-context-menu-repeater.png)
-![Burp-Send-To-Extension Context-Menu](images/burp-send-to-extension-context-menu-target-sitemap.png)
+![Auto-Drop-Requests-Context-Menu](images/auto-drop-requests-context-menu.png)
 
 ## Save and load options
 
-Usually the options of the "Send to"-Tab are saved automatically. However, if you switch computers you may save and load your current options. This can be done by clicking on the gear-symbol in the upper-left corner of the "Send to"-Tab and select the appropriate context-menu-entry.
+Usually the options of the "Auto-Drop"-tab are saved automatically. However, if you switch computers you may save and load your current options. This can be done by clicking on the gear-symbol in the upper-left corner of the "Auto-Drop"-tab and select the appropriate context-menu-entry.
 
-![Burp-Send-To-Extension Options](images/burp-send-to-extension-options.png)
+![Auto-Drop-Requests-Options](images/auto-drop-requests-options.png)
 
-## Security Notes
+## Miscellaneous Options
 
-Executing commands based on untrusted input always introduces the risk of command injection. This is especially true when using the **%S** placeholder. Thus it is recommended to always activate the **Show preview** option when using the **%S** placeholder and closely analyse commands in the preview window prior to execution.
-
-![Burp-Send-To-Extension Options](images/burp-send-to-extension-forkbomb.png)
+To debug your ruleset you can enable the "Log requests which are automatically dropped in the Extender-tab". 
 
 ## Build
 
