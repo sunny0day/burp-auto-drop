@@ -3,6 +3,7 @@ package burp;
 import net.bytebutcher.burpautodropextension.gui.AutoDropRequestContextMenu;
 import net.bytebutcher.burpautodropextension.gui.AutoDropRequestTab;
 import net.bytebutcher.burpautodropextension.gui.AutoDropRequestTable;
+import net.bytebutcher.burpautodropextension.gui.listener.TableListener;
 import net.bytebutcher.burpautodropextension.models.AutoDropRequestRule;
 import net.bytebutcher.burpautodropextension.models.Config;
 import net.bytebutcher.burpautodropextension.models.InterceptedProxyMessageWrapper;
@@ -14,8 +15,9 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
+public class BurpExtender implements IBurpExtender, ITab, IProxyListener, TableListener<AutoDropRequestRule> {
 
     private JPanel tab = null;
     private AutoDropRequestTab autoDropRequestTab = null;
@@ -28,7 +30,7 @@ public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
     public static BurpExtender instance = null;
     private AutoDropRequestRuleMatcher autoDropRequestRuleMatcher;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
+    private List<AutoDropRequestRule> rules;
 
     @Override
     public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {
@@ -45,13 +47,15 @@ public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
         this.config = new Config(this);
         stdout.println("Loading tab...");
         this.autoDropRequestTab = new AutoDropRequestTab(this);
+        this.autoDropRequestTab.getAutoDropRequestTableListener().registerTableLister(this);
         stdout.println("Loading context menu...");
         this.autoDropRequestContextMenu = new AutoDropRequestContextMenu(this, this.autoDropRequestTab.getAutoDropRequestTableListener());
         this.callbacks.registerContextMenuFactory(autoDropRequestContextMenu);
         this.tab = autoDropRequestTab.getRootPanel();
         this.autoDropRequestTable = this.autoDropRequestTab.getAutoDropRequestTable();
         stdout.println("Loading ruleset...");
-        this.autoDropRequestTable.addDropRequestRules(this.config.getAutoDropRequestTableData());
+        this.rules = this.config.getAutoDropRequestTableData();
+        this.autoDropRequestTable.addDropRequestRules(rules);
         this.autoDropRequestRuleMatcher = new AutoDropRequestRuleMatcher(this);
         callbacks.addSuiteTab(this);
         stdout.println("Done.");
@@ -95,7 +99,7 @@ public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
     @Override
     public void processProxyMessage(boolean messageIsRequest, IInterceptedProxyMessage message) {
         if (messageIsRequest) {
-            if (this.autoDropRequestRuleMatcher.match(autoDropRequestTable.getAutoDropRequestRules(), message)) {
+            if (this.autoDropRequestRuleMatcher.match(this.rules, message)) {
                 message.setInterceptAction(IInterceptedProxyMessage.ACTION_DROP);
                 printLog(message);
             }
@@ -140,4 +144,8 @@ public class BurpExtender implements IBurpExtender, ITab, IProxyListener {
         return instance;
     }
 
+    @Override
+    public void tableChanged(List<AutoDropRequestRule> rules) {
+        this.rules = rules;
+    }
 }

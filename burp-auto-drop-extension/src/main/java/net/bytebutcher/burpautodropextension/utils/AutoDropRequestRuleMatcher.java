@@ -64,9 +64,15 @@ public class AutoDropRequestRuleMatcher {
 
     public boolean match(AutoDropRequestRule rule, InterceptedProxyMessageWrapper interceptedProxyMessageWrapper) {
         AbstractMatchType matchType = getMatchType(rule.getMatchType());
-        boolean doesMatch = matchType.match(rule.getMatchCondition(), interceptedProxyMessageWrapper);
-        return ((rule.getMatchRelationship() == AutoDropRequestRule.EMatchRelationship.MATCHES && doesMatch) ||
-                (rule.getMatchRelationship() == AutoDropRequestRule.EMatchRelationship.DOES_NOT_MATCH && !doesMatch));
+        try {
+            boolean doesMatch = matchType.match(rule.getMatchCondition(), interceptedProxyMessageWrapper);
+            return ((rule.getMatchRelationship() == AutoDropRequestRule.EMatchRelationship.MATCHES && doesMatch) ||
+                    (rule.getMatchRelationship() == AutoDropRequestRule.EMatchRelationship.DOES_NOT_MATCH && !doesMatch));
+        } catch (RuntimeException e) {
+            this.burpExtender.getCallbacks().printError("Unexpected exception when processing " + matchType.getClass().getName() + "!");
+            this.burpExtender.getCallbacks().printError(e.toString());
+            return false;
+        }
     }
 
 
