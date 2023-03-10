@@ -42,6 +42,7 @@ public class BurpExtender implements IBurpExtender, IProxyListener, ITab
 				+ "<br>For example, use .*google.* to drop requests with an URL that contains the word google."
 				+ "<br><br></html>"
 		);
+		regexLabel.putClientProperty("html.disable", null);
 		
 		// Main split pane
 		mainPanel = new JPanel(new GridBagLayout());

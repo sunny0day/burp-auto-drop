@@ -7,3 +7,5 @@ burp-auto-drop-extension/build
 burp-auto-drop-extension/.gradle
 burp-auto-drop-extension/gradle
 burp-auto-drop-extension/out
+.gradle/
+build/

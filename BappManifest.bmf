@@ -1,0 +1,13 @@
+Uuid: 623ef289f7df4700a3fbfd42e2d6e47e
+ExtensionType: 1
+Name: Auto-Drop Requests
+RepoName: burp-auto-drop
+ScreenVersion: 1.0.0a
+SerialVersion: 2
+MinPlatformVersion: 0
+ProOnly: False
+Author: sunny0day
+ShortDescription: This extension allows you to automatically Drop requests that match a certain regex.
+EntryPoint: build/libs/burp-auto-drop-all.jar
+BuildCommand: gradle fatJar
+SupportedProducts: Pro, Community
