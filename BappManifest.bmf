@@ -2,7 +2,7 @@ Uuid: 623ef289f7df4700a3fbfd42e2d6e47e
 ExtensionType: 1
 Name: Auto-Drop Requests
 RepoName: burp-auto-drop
-ScreenVersion: 1.0.0a
+ScreenVersion: 1.1.0
 SerialVersion: 2
 MinPlatformVersion: 0
 ProOnly: False
